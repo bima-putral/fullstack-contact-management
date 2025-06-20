@@ -12,4 +12,6 @@ COPY . .
 
 # Jalankan aplikasi
 EXPOSE 3000
+CMD ["npm", "install"]
+CMD ["npx", "prisma", "generate"]
 CMD ["node", "src/main.js"]
