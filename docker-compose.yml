@@ -24,6 +24,7 @@ services:
       - DB_USER=
       - DB_PASSWORD=
       - DB_NAME=belajar_reactjs_contact_management
+    command: sh -c "npx prisma migrate dev && npm start"
     depends_on:
       - mysql
     ports:
