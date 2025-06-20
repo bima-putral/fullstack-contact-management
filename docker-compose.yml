@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 
+      MYSQL_DATABASE: belajar_reactjs_contact_management
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  backend:
+    build: ./backend
+    container_name: backend
+    restart: always
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=
+      - DB_PASSWORD=
+      - DB_NAME=belajar_reactjs_contact_management
+    depends_on:
+      - mysql
+    ports:
+      - "3000:3000"
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+
+volumes:
+  mysql_data:
+
