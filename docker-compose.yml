@@ -1,44 +1,40 @@
-version: "3.8"
+version: '3.9'
 
 services:
   mysql:
-    image: mysql:8
-    container_name: mysql
+    image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: belajar_reactjs_contact_management
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppassword
     volumes:
-      - mysql_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
+      - mysql-data:/var/lib/mysql
 
   backend:
     build: ./backend
-    container_name: backend
     restart: always
-    environment:
-      - DB_HOST=mysql
-      - DB_USER=
-      - DB_PASSWORD=
-      - DB_NAME=belajar_reactjs_contact_management
-    command: sh -c "npx prisma migrate dev && npm start"
     depends_on:
       - mysql
+    environment:
+      DATABASE_URL: mysql://appuser:apppassword@mysql:3306/belajar_reactjs_contact_management
     ports:
       - "3000:3000"
 
   frontend:
     build: ./frontend
-    container_name: frontend
     restart: always
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
     depends_on:
       - backend
-    ports:
-      - "5173:80"
+      - frontend
 
 volumes:
-  mysql_data:
-
+  mysql-data:

@@ -3,13 +3,20 @@ FROM node:20
 # Set working directory
 WORKDIR /app
 
-# Copy package.json dan install dependencies
+# Copy package.json dan package-lock.json
 COPY package*.json ./
+
+# Install dependencies
 RUN npm install
 
 # Copy seluruh source code
 COPY . .
 
-# Jalankan aplikasi
+# Generate Prisma client
+RUN npx prisma generate
+
+# Expose port 3000
 EXPOSE 3000
-CMD ["node", "src/main.js"]
+
+# Jalankan migrate dan aplikasi saat container start
+CMD npx prisma migrate deploy && node src/main.js
