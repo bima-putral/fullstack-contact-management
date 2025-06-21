@@ -11,4 +11,5 @@ RUN npx prisma generate
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node src/main.js"]
+# Wait for database and then run migrations
+CMD ["sh", "-c", "sleep 30 && npx prisma migrate deploy && node src/main.js"]
