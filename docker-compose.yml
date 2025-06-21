@@ -1,40 +1,36 @@
-version: '3.9'
+version: '3.8'
 
 services:
   mysql:
     image: mysql:8.0
-    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: mypassword123
       MYSQL_DATABASE: belajar_reactjs_contact_management
-      MYSQL_USER: appuser
-      MYSQL_PASSWORD: apppassword
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password123
     volumes:
-      - mysql-data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
 
   backend:
     build: ./backend
-    restart: always
-    depends_on:
-      - mysql
-    environment:
-      DATABASE_URL: mysql://appuser:apppassword@mysql:3306/belajar_reactjs_contact_management
     ports:
       - "3000:3000"
+    environment:
+      DATABASE_URL: mysql://user:password123@mysql:3306/belajar_reactjs_contact_management
+    depends_on:
+      - mysql
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
 
   frontend:
     build: ./frontend
-    restart: always
-
-  nginx:
-    image: nginx:latest
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - "80:80"
-    depends_on:
-      - backend
-      - frontend
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://159.223.32.198:3000
 
 volumes:
-  mysql-data:
+  mysql_data:
